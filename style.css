@@ -17,93 +17,132 @@
   padding: 0;
   user-select: none;
   -webkit-user-select: none;
+  touch-action: none; /* Mobilde çift dokunma zoom ve istenmeyen kaydırmaları engeller */
 }
 
-body {
-  background: #11141a;
-  font-family: 'Fredoka', sans-serif;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  color: #333;
-}
-
-#game-container {
-  position: relative;
-  width: 960px;
-  height: 540px;
-  max-width: 100vw;
-  max-height: 100vh;
-  aspect-ratio: 16 / 9;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 0 4px #2b313d;
-  border-radius: 16px;
-  overflow: hidden;
-  background-color: #70c5ce;
-  transform: translateZ(0);
-  contain: paint;
-}
-
-/* Mobil sanal klavye için görünmez isim alanı (font-size 16px: iOS'ta otomatik zoom'u engeller) */
-.name-field {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  border: 0;
-  padding: 0;
-  font-size: 16px;
-  user-select: text;
-  -webkit-user-select: text;
-}
-
-canvas#gameCanvas {
-  display: block;
+html, body {
   width: 100%;
   height: 100%;
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-  transform: translateZ(0);
-  will-change: transform;
-}
-* {
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-body {
-  background: #11141a;
+  background: #0b0f19;
   font-family: 'Press Start 2P', monospace, sans-serif;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   overflow: hidden;
   color: #333;
 }
 
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 #game-container {
   position: relative;
-  width: 960px;
-  height: 540px;
+  width: 100vw;
+  height: 100vh;
   max-width: 100vw;
   max-height: 100vh;
-  aspect-ratio: 16 / 9;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 0 4px #2b313d;
-  border-radius: 16px;
-  overflow: hidden;
-  background-color: #70c5ce;
-  transform: translateZ(0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #0b0f19;
   contain: paint;
 }
 
-/* Mobil sanal klavye için görünmez isim alanı (font-size 16px: iOS'ta otomatik zoom'u engeller) */
+/* 16:9 Canvas tam ekran ölçekleme (Genişliği ve yüksekliği ekrana göre dinamik ayarlar) */
+canvas#gameCanvas {
+  display: block;
+  max-width: 100vw;
+  max-height: 100vh;
+  aspect-ratio: 16 / 9;
+  width: auto;
+  height: auto;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7);
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Mobil Tam Ekran Butonu */
+#fullscreen-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 100;
+  background: rgba(15, 23, 42, 0.85);
+  border: 2px solid rgba(56, 189, 248, 0.6);
+  color: #ffffff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: all 0.2s ease;
+}
+
+#fullscreen-btn:active {
+  transform: scale(0.95);
+  background: rgba(56, 189, 248, 0.4);
+}
+
+/* Dikey modda oynanırken kullanıcıya "Yatay Çevirin" uyarısı */
+#rotate-device-prompt {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(11, 15, 25, 0.96);
+  z-index: 999;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 24px;
+  color: white;
+}
+
+#rotate-device-prompt .rotate-icon {
+  font-size: 54px;
+  margin-bottom: 20px;
+  animation: rotatePulse 1.8s infinite ease-in-out;
+}
+
+#rotate-device-prompt h2 {
+  font-size: 14px;
+  color: #fde047;
+  margin-bottom: 14px;
+  line-height: 1.6;
+}
+
+#rotate-device-prompt p {
+  font-size: 10px;
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+@keyframes rotatePulse {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(-90deg) scale(1.15); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+
+/* Sadece mobil dikey ekranda uyarıyı göster */
+@media screen and (orientation: portrait) and (max-width: 900px) {
+  #rotate-device-prompt {
+    display: flex;
+  }
+}
+
+/* Mobil sanal klavye için görünmez isim alanı (iOS auto-zoom engellemek için 16px) */
 .name-field {
   position: fixed;
   top: 0;
@@ -116,14 +155,4 @@ body {
   font-size: 16px;
   user-select: text;
   -webkit-user-select: text;
-}
-
-canvas#gameCanvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-  transform: translateZ(0);
-  will-change: transform;
 }

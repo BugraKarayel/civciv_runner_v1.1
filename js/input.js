@@ -42,11 +42,36 @@ export const Input = {
       }
     });
 
-    // Pointer olayları fare ve dokunmayı tek seferde karşılar; touchstart + taklit mousedown
-    // ile bir dokunuşun iki kez (çift zıplama / çift kanat çırpma) algılanmasını önler.
-    window.addEventListener('pointerdown', handleDown);
-    window.addEventListener('pointerup', handleUp);
-    window.addEventListener('pointercancel', handleUp);
+    let startY = 0;
+    let isTrackingTouch = false;
+
+    // Pointer olayları: Fare ve dokunmayı karşılar, aşağı kaydırma (swipe down) ile hızlı düşmeyi tetikler
+    window.addEventListener('pointerdown', (e) => {
+      // Tam ekran butonuna basıldıysa oyun zıplamasını tetikleme
+      if (e.target && e.target.id === 'fullscreen-btn') return;
+      
+      startY = e.clientY;
+      isTrackingTouch = true;
+      handleDown();
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      if (!isTrackingTouch) return;
+      const deltaY = e.clientY - startY;
+      // Parmağı 30 pikselden fazla aşağı kaydırırsa: Fast Fall (Hızlı Düşme)
+      if (deltaY > 30) {
+        this.fastFallPressed = true;
+      }
+    });
+
+    const finishPointer = () => {
+      isTrackingTouch = false;
+      this.fastFallPressed = false;
+      handleUp();
+    };
+
+    window.addEventListener('pointerup', finishPointer);
+    window.addEventListener('pointercancel', finishPointer);
   },
   
   update() {

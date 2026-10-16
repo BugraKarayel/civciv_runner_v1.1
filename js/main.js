@@ -25,9 +25,44 @@ Input.init();
 Konami.onActivate = () => sounds.milestone();
 UI.initNameField();
 Leaderboard.initAdmin();
-sounds.init();
 World.init();
 ObstacleManager.init();
+
+// Mobil & Masaüstü Tam Ekran (Fullscreen) Desteği
+const fullscreenBtn = document.getElementById('fullscreen-btn');
+if (fullscreenBtn) {
+  const toggleFullscreen = () => {
+    sounds.init();
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      const el = document.documentElement;
+      if (el.requestFullscreen) {
+        el.requestFullscreen().catch(() => {});
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
+    }
+  };
+
+  const updateFullscreenBtnText = () => {
+    const isFs = Boolean(document.fullscreenElement || document.webkitFullscreenElement);
+    fullscreenBtn.textContent = isFs ? '✕ ÇIK' : '⛶ TAM EKRAN';
+  };
+
+  fullscreenBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleFullscreen();
+  });
+  fullscreenBtn.addEventListener('pointerdown', (e) => e.stopPropagation());
+
+  document.addEventListener('fullscreenchange', updateFullscreenBtnText);
+  document.addEventListener('webkitfullscreenchange', updateFullscreenBtnText);
+}
 
 // Menüde (IDLE) kostüm kartına veya vitrine tıklama
 canvas.addEventListener('pointerdown', (e) => {
