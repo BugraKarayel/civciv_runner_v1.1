@@ -49,7 +49,6 @@ export const UI = {
     }
     PaletteManager.drawToast(ctx, width, height);
     GodMode.drawToast(ctx, width, height);
-    sounds.drawToast(ctx, width, height);
 
     if (StateMachine.paused) {
       this.drawPause(ctx, width, height);
@@ -323,7 +322,7 @@ export const UI = {
 
     ctx.font = '8px "Press Start 2P", monospace';
     ctx.fillStyle = '#64748b';
-    ctx.fillText('[P/1-4] PALET • [C/S] KOSTÜM • [M] SES • [ESC] DURAKLAT • [Ctrl+G] GOD MODE', w / 2, h - 20);
+    ctx.fillText('[P/1-4] PALET • [C/S] KOSTÜM • [ESC] DURAKLAT • [Ctrl+G] GOD MODE', w / 2, h - 20);
   },
 
   drawTutorial(ctx, w, h) {

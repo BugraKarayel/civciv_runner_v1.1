@@ -1,42 +1,47 @@
 // Kapsamlı Türkçe, İngilizce ve Hibrit (Harf + Rakam + Sembol) Küfür ve Argo Filtresi
 
 const BANNED_PATTERNS = [
-  // Cinsel & Argo
+  // Cinsel & Müstehcen & Argo
   'sex', 'seks', 'sxs', 'sakso', 'saxo', 'anal', 'oral', 'dildo', 'vagina', 'penis', 'vajina', 'meme',
-  'porno', 'porn', 'xxx',
+  'porno', 'porn', 'xxx', 'masturbasyon', 'masturbate', 'kondom', 'condom', 'ereksiyon', 'orgazm', 'orgasm',
+  'ejaculat', 'fetis', 'fetish',
 
-  // Türkçe Küfür ve Hakaretler
+  // Türkçe Ağır Küfürler, Hakaretler & Argo
   'amk', 'amq', 'aq', 'sik', 'siki', 'sikt', 'sike', 'siko', 'sokuk', 'sokayim', 'sokam', 'sikik', 'sikis',
   'yarrak', 'yarak', 'yarrk', 'yark', 'yarram', 'yarragim',
   'orospu', 'orosp', 'orspu', 'oc', 'oç',
   'pic', 'piç',
-  'got', 'göt', 'gotlek', 'götoş',
+  'got', 'göt', 'gotlek', 'götoş', 'gotos', 'göten', 'goten',
   'ibne', 'pust', 'puşt',
   'kahpe', 'kasar', 'kaşar',
   'dalyarak', 'dalyarrak',
   'tasak', 'taşak', 'dassak', 'daşşak',
-  'amcik', 'amcık',
+  'amcik', 'amcık', 'amina', 'amına', 'amini', 'amını', 'aminakoyim', 'amınakoyim', 'amnk',
   'pezevenk', 'pezeveng', 'gavat', 'kavat',
   'ebeni', 'ebenin', 'anani', 'ananı', 'bacini', 'bacını', 'sulaleni', 'sülaleni',
   'yavsak', 'yavşak',
-  'gerizekali', 'gerizekalı', 'salak', 'aptal', 'dangalak', 'andaval', 'ezik',
-  'siktir', 'sikeyim', 'sikerim', 'sikim', 'amina', 'amına', 'amini', 'aminakoyim', 'amnk',
-  'mk', 'mq', 'orosbu', 'oruspu', 'orospucocugu', 'fahise', 'fahişe', 'kancik', 'kancık',
-  'haysiyetsiz', 'serefsiz', 'şerefsiz', 'itoglu', 'itoğlu', 'ibine', 'ibneler',
-  'boktan', 'sicmak', 'sıçmak', 'sicti', 'sıçtı', 'siciyim', 'sıçayım',
-  'gavur', 'zenci', 'terorist', 'terörist', 'hitler',
+  'gerizekali', 'gerizekalı', 'salak', 'aptal', 'dangalak', 'andaval', 'ezik', 'moron', 'ahmak', 'embesil',
+  'manyak', 'haysiyetsiz', 'serefsiz', 'şerefsiz', 'itoglu', 'itoğlu', 'ibine', 'ibneler',
+  'siktir', 'sikeyim', 'sikerim', 'sikim', 'siktim', 'siksen',
+  'mk', 'mq', 'orosbu', 'oruspu', 'orospucocugu', 'orospu_cocugu', 'fahise', 'fahişe', 'kancik', 'kancık',
+  'boktan', 'bok', 'boklu', 'sicmak', 'sıçmak', 'sicti', 'sıçtı', 'siciyim', 'sıçayım',
+  'cibiliyetsiz', 'suratsiz', 'yuzsuz', 'yüzsüz', 'kopek', 'köpek', 'it', 'domuz', 'hirt', 'hırt',
+  'namussuz', 'alçak', 'alcak', 'rezil', 'kepaze', 'yavsaklar', 'lavuk', 'gevsek', 'gevşek',
+  'gavur', 'zenci', 'terorist', 'terörist', 'hitler', 'nazi',
 
-  // İngilizce Küfürler & Slurs
+  // İngilizce Küfürler & Slurs & Toxic Terms
   'fuck', 'fuk', 'fck', 'fuc', 'fucker', 'motherfucker', 'bitch', 'btch',
   'dick', 'pussy', 'cunt', 'cock', 'whore', 'slut',
   'fag', 'faggot', 'nigger', 'nigga', 'niger',
   'shit', 'bullshit', 'asshole', 'bastard', 'retard', 'rapist', 'jizz',
-  'tits', 'boobs', 'wank', 'twat', 'dumbass', 'jackass'
+  'tits', 'boobs', 'wank', 'twat', 'dumbass', 'jackass', 'dipshit', 'blowjob',
+  'cum', 'clit', 'slutty', 'hoe', 'nazi', 'pedophile', 'pedo'
 ];
 
-// Masum Türkçe kelimeler (içinde 'sik' vb. geçenler)
+// Masum kelimeler (içinde 'sik', 'got', 'it' vb. geçebilecek meşru Türkçe/İngilizce isim ve terimler)
 const WHITELIST = [
-  'klasik', 'eksik', 'kesik', 'fizik', 'muzik', 'baki', 'burak'
+  'klasik', 'eksik', 'kesik', 'fizik', 'muzik', 'müzik', 'baki', 'burak',
+  'ahmet', 'kemal', 'mehmet', 'aslan', 'animal', 'grape', 'document', 'civciv', 'dino'
 ];
 
 export const ProfanityFilter = {

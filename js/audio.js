@@ -2,11 +2,9 @@ export class SoundManager {
   constructor() {
     this.ctx = null;
     this.enabled = true;
-    this.muted = false;
-    this.toastTimer = 0;
     try {
       if (typeof localStorage !== 'undefined') {
-        this.muted = localStorage.getItem('civciv_muted') === '1';
+        localStorage.removeItem('civciv_muted');
       }
     } catch (e) {}
   }
@@ -26,51 +24,11 @@ export class SoundManager {
     }
   }
 
-  toggleMute() {
-    this.muted = !this.muted;
-    this.toastTimer = 1800;
-    try {
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem('civciv_muted', this.muted ? '1' : '0');
-      }
-    } catch (e) {}
-    if (!this.muted) {
-      this.init();
-      this.collectSeed();
-    }
-    return this.muted;
-  }
-
-  update(dtMs) {
-    if (this.toastTimer > 0) {
-      this.toastTimer = Math.max(0, this.toastTimer - dtMs);
-    }
-  }
-
-  drawToast(ctx, w, h) {
-    if (this.toastTimer <= 0) return;
-    const alpha = Math.min(1, this.toastTimer / 350);
-    ctx.save();
-    ctx.globalAlpha = alpha;
-    const boxW = 240;
-    const boxH = 34;
-    const boxX = (w - boxW) / 2;
-    const boxY = h - 95;
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
-    ctx.fillRect(boxX, boxY, boxW, boxH);
-    ctx.strokeStyle = this.muted ? '#ef4444' : '#4ade80';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(boxX, boxY, boxW, boxH);
-    ctx.font = '10px "Press Start 2P", monospace';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = this.muted ? '#fca5a5' : '#86efac';
-    ctx.fillText(this.muted ? '🔇 SES KAPATILDI' : '🔊 SES AÇILDI', w / 2, boxY + boxH / 2 + 1);
-    ctx.restore();
-  }
+  update(dtMs) {}
+  drawToast(ctx, w, h) {}
 
   playTone(freq, type, duration, endFreq = null) {
-    if (!this.enabled || this.muted || !this.ctx) return;
+    if (!this.enabled || !this.ctx) return;
     try {
       const t = this.ctx.currentTime;
       const osc = this.ctx.createOscillator();

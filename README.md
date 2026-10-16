@@ -23,7 +23,7 @@ A retro pixel-art endless runner game developed for **GDG on Campus Bolu Abant I
 - **Google Dino Acceleration:** Continuous smooth speed ramp (`ACCELERATION = 0.0018`) and celebratory 100m milestones (chime sound, sparks, flashing distance display).
 - **Daily Leaderboard & Moderation:** LocalStorage-based Daily Top 10 leaderboard with automatic leetspeak/profanity filtering (`Civciv#XXX`) and hidden admin tools (`Ctrl + Shift + A`).
 - **Display Optimization:** VSync-quantized delta timing and integer pixel snapping for stutter-free 60Hz and high-refresh-rate displays (144Hz, 165Hz, 240Hz).
-- **Quality of Life:** Audio mute toggle (`M`), pause/resume (`Escape`), and fast falling (`↓` / `S`).
+- **Quality of Life:** Pause/resume (`Escape`) and fast falling (`↓` / `S`).
 
 ---
 
@@ -61,7 +61,6 @@ npx serve .
 | **Fast Fall** | `↓` (Arrow Down) or `S` |
 | **Switch Skin** | `C` or `S` (in menu) or click skin cards / vitrine |
 | **Switch Palette** | `P` or `1` - `4` (4: Full Pastel Mode) |
-| **Mute / Unmute Audio** | `M` |
 | **Pause / Resume** | `Escape` |
 | **God Mode (Invincible)** | `Ctrl + G` |
 | **Admin Panel** | `Ctrl + Shift + A` (or `Ctrl + A + D`) |
@@ -88,7 +87,7 @@ npx serve .
 - **Google Dino Hız Modeli:** Sürekli yumuşak ivmelenme (`ACCELERATION = 0.0018`) ve her 100 metrede bir milestone kutlaması (çan sesi, kıvılcımlar, gösterge parlaması).
 - **Günlük Liderlik Tablosu & Güvenlik:** LocalStorage tabanlı Günün Top 10 sıralaması, leetspeak korumalı küfür filtresi (`Civciv#XXX`) ve gizli admin paneli (`Ctrl + Shift + A`).
 - **Ekran Optimizasyonu:** 60Hz, 144Hz, 165Hz ve 240Hz monitörlerde takılmaları sıfırlayan VSync-quantized delta ve piksel hizalama.
-- **Kullanım Kolaylıkları:** Ses açma/kapama (`M`), oyunu duraklatma (`Escape`), hızlı yere inme (`↓` / `S`).
+- **Kullanım Kolaylıkları:** Oyunu duraklatma (`Escape`), hızlı yere inme (`↓` / `S`).
 
 ---
 
@@ -121,7 +120,6 @@ npx serve .
 | **Hızlı Yere İnme (Fast Fall)** | `↓` (Aşağı Ok) veya `S` |
 | **Kostüm Değiştir** | `C` veya Menüde `S` / Kostüm Kartlarına Tıkla |
 | **Renk Paleti Değiştir** | `P` veya `1` - `4` (4: Tam Pastel Modu) |
-| **Sesi Aç / Kapat** | `M` |
 | **Duraklat / Devam Et** | `Escape` |
 | **God Mode (Ölümsüzlük)** | `Ctrl + G` |
 | **Admin Paneli** | `Ctrl + Shift + A` (veya `Ctrl + A + D`) |

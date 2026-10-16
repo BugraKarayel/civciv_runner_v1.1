@@ -62,16 +62,11 @@
       }
       log('Fare ile Milli Takım kostümü seçimi başarılı (footballer).');
 
-      // 5. Ses Mute / Unmute Testi
+      // 5. Ses Sistemi Testi (Her Zaman Açık / Always-on)
       sounds.init();
-      const mute1 = sounds.toggleMute();
-      if (!mute1 || !sounds.muted) throw new Error('toggleMute() sesi kapatamadı!');
-      sounds.drawToast(ctx, 960, 540);
-      log('Ses kapatma (Mute) ve toast bildirimi hatasız çalıştı.');
-
-      const mute2 = sounds.toggleMute();
-      if (mute2 || sounds.muted) throw new Error('toggleMute() sesi tekrar açamadı!');
-      log('Ses tekrar açma (Unmute) hatasız çalıştı.');
+      if (!sounds.enabled) throw new Error('SoundManager başlatılamadı!');
+      sounds.playTone(440, 0.05, 'sine', 0.1);
+      log('Ses sistemi her zaman açık modda (Always-on) ve ses çalma hatasız çalıştı.');
 
       // 6. Palet Döngüsü ve Pastel Modu Testi
       PaletteManager.setPalette(1);

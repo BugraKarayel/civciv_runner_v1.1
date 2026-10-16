@@ -47,7 +47,7 @@ canvas.addEventListener('pointerdown', (e) => {
   }
 });
 
-// Kısayollar: Ctrl+G (God Mode), 'P'/1-4 (Palet), 'C'/'S'/Oklar (Kostüm), 'M' (Ses), 'Esc' (Duraklat)
+// Kısayollar: Ctrl+G (God Mode), 'P'/1-4 (Palet), 'C'/'S'/Oklar (Kostüm), 'Esc' (Duraklat)
 window.addEventListener('keydown', (e) => {
   // Ctrl + G / Cmd + G: God Mode Toggle
   if ((e.ctrlKey || e.metaKey) && (e.key === 'g' || e.key === 'G')) {
@@ -64,12 +64,6 @@ window.addEventListener('keydown', (e) => {
       sounds.init();
       return;
     }
-  }
-
-  // M / m: Ses Aç / Kapa (Mute toggle)
-  if (e.key === 'm' || e.key === 'M') {
-    sounds.toggleMute();
-    return;
   }
 
   if (StateMachine.current === States.ENTER_NAME) return;

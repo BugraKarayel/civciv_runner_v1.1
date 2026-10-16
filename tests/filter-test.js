@@ -42,6 +42,12 @@ for (const word of complexNames) {
   assert(ProfanityFilter.isProfane(word), `Karmaşık ifade "${word}" filtrelenmeli`);
 }
 
+// 5. Yeni eklenen küfür & hakaretler
+const newlyAddedProfane = ['moron', 'embesil', 'manyak', 'namussuz', 'lavuk', 'gevsek', 'nazi', 'pedophile', 'blowjob', 'kondom'];
+for (const word of newlyAddedProfane) {
+  assert(ProfanityFilter.isProfane(word), `Yeni eklenen "${word}" filtrelenmeli`);
+}
+
 console.log(`\nTest Sonucu: ${passed} Başarılı, ${failed} Hatalı`);
 if (failed > 0) {
   process.exit(1);

@@ -27,47 +27,20 @@ function test(name, fn) {
 console.log('--- Civciv Runner v1.0 Yeni Özellikler & Fonksiyonellik Testleri ---');
 
 // ====================================================
-// TEST 1: Ses Açma / Kapama (Mute / Unmute) Sistemi
+// TEST 1: Ses Sistemi (Daima Açık ve Kesintisiz)
 // ====================================================
 import { SoundManager } from '../js/audio.js';
 
-test('SoundManager varsayılan olarak açık (muted = false)', () => {
+test('SoundManager varsayılan olarak açık (enabled = true)', () => {
   localStorage.clear();
   const sm = new SoundManager();
-  assert.strictEqual(sm.muted, false);
+  assert.strictEqual(sm.enabled, true);
 });
 
-test('toggleMute() sesi kapatır ve bildirim zamanlayıcısını (1800ms) kurar', () => {
-  const sm = new SoundManager();
-  const res = sm.toggleMute();
-  assert.strictEqual(res, true);
-  assert.strictEqual(sm.muted, true);
-  assert.strictEqual(sm.toastTimer, 1800);
-  assert.strictEqual(localStorage.getItem('civciv_muted'), '1');
-});
-
-test('toggleMute() tekrar çağrıldığında sesi açar ve localStorage güncellenir', () => {
-  const sm = new SoundManager();
-  sm.muted = true;
-  const res = sm.toggleMute();
-  assert.strictEqual(res, false);
-  assert.strictEqual(sm.muted, false);
-  assert.strictEqual(localStorage.getItem('civciv_muted'), '0');
-});
-
-test('SoundManager başlatıldığında kaydedilen mute tercihini hatırlar', () => {
+test('SoundManager başlatıldığında eski mute kayıtlarını temizler', () => {
   localStorage.setItem('civciv_muted', '1');
   const sm = new SoundManager();
-  assert.strictEqual(sm.muted, true);
-});
-
-test('update() bildirim süresini azaltır', () => {
-  const sm = new SoundManager();
-  sm.toastTimer = 1000;
-  sm.update(200);
-  assert.strictEqual(sm.toastTimer, 800);
-  sm.update(900);
-  assert.strictEqual(sm.toastTimer, 0);
+  assert.strictEqual(localStorage.getItem('civciv_muted'), null);
 });
 
 // ====================================================
@@ -190,6 +163,52 @@ test('PaletteManager 4 palet arasında dairesel geçer ve 4. palet isPastel = tr
   PaletteManager.setPalette(4);
   assert.strictEqual(PaletteManager.isPastel, true);
   assert.strictEqual(PaletteManager.groundPalette.grassMain, '#58BA5D');
+});
+
+// ====================================================
+// TEST 6: Leaderboard Aynı İsim Üzerine Yazma & Tekil Silme
+// ====================================================
+import { Leaderboard } from '../js/leaderboard.js';
+
+test('Aynı isim tekrar deneme yaptığında yeni satır açmak yerine önceki skorun üstüne yazar', () => {
+  localStorage.clear();
+  Leaderboard.clearCache();
+  Leaderboard.addRecord('Ahmet', 450);
+  Leaderboard.addRecord('Mehmet', 600);
+  Leaderboard.addRecord('ahmet', 920); // Aynı isim tekrar denedi
+
+  const top10 = Leaderboard.getDailyTop10();
+  assert.strictEqual(top10.length, 2, 'Tabloda 3 değil 2 kişi olmalı');
+  const ahmet = top10.find(r => r.name.toLowerCase() === 'ahmet');
+  assert.strictEqual(ahmet.score, 920, 'Önceki skorun üstüne yeni skor yazılmalı');
+});
+
+test('Aynı isim daha düşük skor yaptığında da önceki skorunun üstüne yazar', () => {
+  Leaderboard.addRecord('Ahmet', 310);
+  const top10 = Leaderboard.getDailyTop10();
+  assert.strictEqual(top10.length, 2);
+  const ahmet = top10.find(r => r.name.toLowerCase() === 'ahmet');
+  assert.strictEqual(ahmet.score, 310);
+});
+
+test('Admin panelinde aynı isimde birden fazla kayıt varsa deleteByIndex sadece seçileni siler', () => {
+  // Farklı tarihlerden veya eski kayıtlardan aynı isimde 2 kişi olsun
+  Leaderboard.save([
+    { name: 'Can', score: 1200, date: '2026-10-15', ts: 1 },
+    { name: 'Can', score: 850, date: '2026-10-16', ts: 2 },
+    { name: 'Zeynep', score: 900, date: '2026-10-16', ts: 3 }
+  ]);
+  const matches = Leaderboard.findMatches('Can');
+  assert.strictEqual(matches.length, 2);
+
+  // Sadece 2. sıradaki Can (850 puan) silinsin
+  const removed = Leaderboard.deleteByIndex(matches[1].index);
+  assert.strictEqual(removed.score, 850);
+
+  const remaining = Leaderboard.get();
+  assert.strictEqual(remaining.length, 2);
+  assert.strictEqual(remaining[0].name, 'Can');
+  assert.strictEqual(remaining[0].score, 1200);
 });
 
 console.log(`\nSonuç: ${passCount} başarılı, ${failCount} hatalı`);

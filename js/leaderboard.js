@@ -62,8 +62,49 @@ export const Leaderboard = {
   addRecord(name, score) {
     const list = this.get();
     const today = todayLocal();
-    list.push({ name, score, date: today, ts: Date.now() });
+    const norm = name.trim().toLowerCase();
+
+    // Aynı gün içinde aynı isimle kayıt varsa yeni satır eklemek yerine önceki skorun üstüne yaz
+    let updated = false;
+    const nextList = [];
+    for (let i = 0; i < list.length; i++) {
+      const r = list[i];
+      if (r.date === today && r.name.trim().toLowerCase() === norm) {
+        if (!updated) {
+          nextList.push({ name: name.trim(), score, date: today, ts: Date.now() });
+          updated = true;
+        }
+        // Varsa eski mükerrer kayıtları atla
+      } else {
+        nextList.push(r);
+      }
+    }
+
+    if (!updated) {
+      nextList.push({ name: name.trim(), score, date: today, ts: Date.now() });
+    }
+
+    this.save(nextList);
+  },
+
+  findMatches(name) {
+    const list = this.get();
+    const norm = (name || '').trim().toLowerCase();
+    const matches = [];
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].name.trim().toLowerCase() === norm) {
+        matches.push({ record: list[i], index: i });
+      }
+    }
+    return matches;
+  },
+
+  deleteByIndex(targetIndex) {
+    const list = this.get();
+    if (targetIndex < 0 || targetIndex >= list.length) return null;
+    const [removed] = list.splice(targetIndex, 1);
     this.save(list);
+    return removed;
   },
   
   initAdmin() {
@@ -90,14 +131,39 @@ export const Leaderboard = {
           }
         } else if (action === '2') {
           const nameToDel = prompt('Silmek istediğiniz oyuncunun tam ismini girin:');
-          if (nameToDel) {
-            const initialLength = list.length;
-            list = list.filter(r => r.name.toLowerCase() !== nameToDel.toLowerCase());
-            if (list.length < initialLength) {
-              this.save(list);
-              alert(`"${nameToDel}" isimli oyuncunun kaydı silindi.`);
-            } else {
+          if (nameToDel && nameToDel.trim()) {
+            const matches = this.findMatches(nameToDel);
+            if (matches.length === 0) {
               alert('Böyle bir kullanıcı bulunamadı.');
+            } else if (matches.length === 1) {
+              const removed = this.deleteByIndex(matches[0].index);
+              alert(`"${removed.name}" (Skor: ${removed.score}) isimli oyuncunun kaydı silindi.`);
+            } else {
+              const optionsText = matches
+                .map((m, idx) => `${idx + 1} - ${m.record.name} | Skor: ${m.record.score} | Tarih: ${m.record.date}`)
+                .join('\n');
+              const choice = prompt(
+                `"${nameToDel.trim()}" isminde ${matches.length} kayıt bulundu.\n` +
+                `Silmek istediğiniz kaydın numarasını (1-${matches.length}) girin:\n\n` +
+                `${optionsText}\n\n` +
+                `(Tümünü silmek için "hepsi" yazabilirsiniz)`
+              );
+              if (choice) {
+                const trimmedChoice = choice.trim().toLowerCase();
+                if (trimmedChoice === 'hepsi' || trimmedChoice === 'tümü') {
+                  const norm = nameToDel.trim().toLowerCase();
+                  this.save(list.filter(r => r.name.trim().toLowerCase() !== norm));
+                  alert(`"${nameToDel.trim()}" isimli tüm kayıtlar (${matches.length} adet) silindi.`);
+                } else {
+                  const num = parseInt(trimmedChoice, 10);
+                  if (!isNaN(num) && num >= 1 && num <= matches.length) {
+                    const removed = this.deleteByIndex(matches[num - 1].index);
+                    alert(`${num}. sıradaki "${removed.name}" (Skor: ${removed.score}) kaydı silindi.`);
+                  } else {
+                    alert('Geçersiz seçim, silme işlemi iptal edildi.');
+                  }
+                }
+              }
             }
           }
         } else if (action === '3') {
