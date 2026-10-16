@@ -43,14 +43,16 @@ export const Input = {
     });
 
     let startY = 0;
+    let startTime = 0;
     let isTrackingTouch = false;
 
-    // Pointer olayları: Fare ve dokunmayı karşılar, aşağı kaydırma (swipe down) ile hızlı düşmeyi tetikler
+    // Pointer olayları: Dokunma ve fare kontrolleri
     window.addEventListener('pointerdown', (e) => {
-      // Tam ekran butonuna basıldıysa oyun zıplamasını tetikleme
-      if (e.target && e.target.id === 'fullscreen-btn') return;
+      // Tam ekran veya hızlı düşme butonuna tıklandıysa zıplatma
+      if (e.target && (e.target.id === 'fullscreen-btn' || e.target.id === 'fastfall-btn')) return;
       
       startY = e.clientY;
+      startTime = performance.now();
       isTrackingTouch = true;
       handleDown();
     });
@@ -58,15 +60,29 @@ export const Input = {
     window.addEventListener('pointermove', (e) => {
       if (!isTrackingTouch) return;
       const deltaY = e.clientY - startY;
-      // Parmağı 30 pikselden fazla aşağı kaydırırsa: Fast Fall (Hızlı Düşme)
-      if (deltaY > 30) {
+      // Parmağı aşağı kaydırınca hızlı düşmeyi tetikle (20px eşik)
+      if (deltaY > 20) {
         this.fastFallPressed = true;
       }
     });
 
-    const finishPointer = () => {
+    const finishPointer = (e) => {
+      if (isTrackingTouch && e) {
+        const deltaY = e.clientY - startY;
+        const deltaTime = performance.now() - startTime;
+        // Hızlı bir şekilde aşağı çekip bıraktıysa (Swipe): yere inene kadar 220ms basılı tut
+        if (deltaY > 25 && deltaTime < 350) {
+          this.fastFallPressed = true;
+          setTimeout(() => {
+            this.fastFallPressed = false;
+          }, 220);
+        } else {
+          this.fastFallPressed = false;
+        }
+      } else {
+        this.fastFallPressed = false;
+      }
       isTrackingTouch = false;
-      this.fastFallPressed = false;
       handleUp();
     };
 

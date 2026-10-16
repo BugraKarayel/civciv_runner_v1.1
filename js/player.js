@@ -88,7 +88,7 @@ export class Player {
     }
 
     if (StateMachine.current === States.RUN || StateMachine.current === States.GAMEOVER || StateMachine.current === States.TUTORIAL) {
-      const gravityMult = (!this.isGrounded && Input.fastFallPressed && StateMachine.current !== States.GAMEOVER) ? 2.4 : 1;
+      const gravityMult = (!this.isGrounded && Input.fastFallPressed && StateMachine.current !== States.GAMEOVER) ? 3.5 : 1;
       this.vy += CONFIG.GRAVITY_RUN * gravityMult * dt;
       this.y += this.vy * dt;
 

@@ -332,8 +332,8 @@ export const UI = {
     ctx.textBaseline = 'middle';
 
     ctx.fillStyle = 'white';
-    ctx.font = '16px "Press Start 2P", monospace';
-    ctx.fillText('TIKLA/SPACE = ZIPLA  |  AŞAĞI KAYDIR/S = HIZLI DÜŞ', w / 2, 110);
+    ctx.font = '15px "Press Start 2P", monospace';
+    ctx.fillText('EKRANA DOKUN: ZIPLA (2X) | ▼ BUTONU / KAYDIR: HIZLI DÜŞ', w / 2, 110);
 
     // Puan hesaplama
     ctx.fillStyle = '#fde047';

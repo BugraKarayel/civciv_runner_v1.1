@@ -64,6 +64,27 @@ if (fullscreenBtn) {
   document.addEventListener('webkitfullscreenchange', updateFullscreenBtnText);
 }
 
+// Mobil Hızlı Düşme Butonu Dinleyicisi
+const fastfallBtn = document.getElementById('fastfall-btn');
+if (fastfallBtn) {
+  const startFastFall = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    Input.fastFallPressed = true;
+    fastfallBtn.classList.add('active');
+  };
+  const stopFastFall = (e) => {
+    if (e) e.stopPropagation();
+    Input.fastFallPressed = false;
+    fastfallBtn.classList.remove('active');
+  };
+
+  fastfallBtn.addEventListener('pointerdown', startFastFall);
+  fastfallBtn.addEventListener('pointerup', stopFastFall);
+  fastfallBtn.addEventListener('pointercancel', stopFastFall);
+  fastfallBtn.addEventListener('pointerleave', stopFastFall);
+}
+
 // Menüde (IDLE) kostüm kartına veya vitrine tıklama
 canvas.addEventListener('pointerdown', (e) => {
   if (StateMachine.current === States.IDLE) {
