@@ -7,7 +7,9 @@ const BANNED_PATTERNS = [
   'ejaculat', 'fetis', 'fetish',
 
   // Türkçe Ağır Küfürler, Hakaretler & Argo
-  'amk', 'amq', 'aq', 'sik', 'siki', 'sikt', 'sike', 'siko', 'sokuk', 'sokayim', 'sokam', 'sikik', 'sikis',
+  'am', '4m', 'amk', 'amq', 'aq', 'amc', 'amcik', 'amcık', 'amina', 'amına', 'amini', 'amını',
+  'aminakoyim', 'amınakoyim', 'aminakoyayim', 'amınakoyayım', 'amnk', 'amli', 'amlı', 'amsalak', 'amhosafi', 'amhoşafı', 'amcuk', 'amcug', 'ambit', 'ambiti',
+  'sik', 'siki', 'sikt', 'sike', 'siko', 'sokuk', 'sokayim', 'sokam', 'sikik', 'sikis',
   'yarrak', 'yarak', 'yarrk', 'yark', 'yarram', 'yarragim',
   'orospu', 'orosp', 'orspu', 'oc', 'oç',
   'pic', 'piç',
@@ -16,7 +18,6 @@ const BANNED_PATTERNS = [
   'kahpe', 'kasar', 'kaşar',
   'dalyarak', 'dalyarrak',
   'tasak', 'taşak', 'dassak', 'daşşak',
-  'amcik', 'amcık', 'amina', 'amına', 'amini', 'amını', 'aminakoyim', 'amınakoyim', 'amnk',
   'pezevenk', 'pezeveng', 'gavat', 'kavat',
   'ebeni', 'ebenin', 'anani', 'ananı', 'bacini', 'bacını', 'sulaleni', 'sülaleni',
   'yavsak', 'yavşak',
@@ -38,10 +39,11 @@ const BANNED_PATTERNS = [
   'cum', 'clit', 'slutty', 'hoe', 'nazi', 'pedophile', 'pedo'
 ];
 
-// Masum kelimeler (içinde 'sik', 'got', 'it' vb. geçebilecek meşru Türkçe/İngilizce isim ve terimler)
+// Masum kelimeler (içinde 'sik', 'got', 'it', 'am' vb. geçebilecek meşru Türkçe/İngilizce isim ve terimler)
 const WHITELIST = [
   'klasik', 'eksik', 'kesik', 'fizik', 'muzik', 'müzik', 'baki', 'burak',
-  'ahmet', 'kemal', 'mehmet', 'aslan', 'animal', 'grape', 'document', 'civciv', 'dino'
+  'ahmet', 'kemal', 'mehmet', 'aslan', 'animal', 'grape', 'document', 'civciv', 'dino',
+  'samet', 'gamze', 'hamza', 'ramazan', 'damla', 'kamil', 'selam', 'islam', 'adam', 'gamer', 'champ', 'team'
 ];
 
 export const ProfanityFilter = {
@@ -99,6 +101,22 @@ export const ProfanityFilter = {
     // 1. Troll numaralar: 31 veya 69 herhangi bir yerde geçiyorsa (ali31, 31can vb.)
     if (/31|69/.test(raw)) return true;
 
+    // 2. Doğrudan '4m' veya ayrık 'am' / '4m' token kontrolü (örn: "4m", "4m_123", "am_k", "a.m", "4.m", "am 1")
+    const tr = { 'ç': 'c', 'ğ': 'g', 'ı': 'i', 'i': 'i', 'ö': 'o', 'ş': 's', 'ü': 'u' };
+    const normRaw = raw.replace(/[çğıöşü]/g, c => tr[c] || c);
+    if (/4+m+/.test(normRaw)) return true;
+
+    // Kelime ayraçlarıyla (boşluk, _, -, nokta veya rakamlarla) ayrılmış tekil parçaları kontrol et
+    const tokens = normRaw.split(/[^a-z0-9]+/).filter(Boolean);
+    const collapse = s => s.replace(/(.)\1+/g, '$1');
+    for (const tok of tokens) {
+      const tokLeet = tok.replace(/4/g, 'a').replace(/@/g, 'a').replace(/0/g, 'o').replace(/1/g, 'i');
+      const tokNoNums = collapse(tokLeet.replace(/[0-9]/g, ''));
+      if (tokNoNums === 'am' || tokNoNums === 'aq' || tokNoNums === 'oc' || tokNoNums === 'mk' || tokNoNums === 'mq') {
+        return true;
+      }
+    }
+
     const variants = this.getVariants(text);
 
     for (const v of variants) {
@@ -111,9 +129,10 @@ export const ProfanityFilter = {
         if (v === p) return true;
         // 3 veya daha uzun köklerin parça eşleşmesi (örn: sex, seks, amk, orospu, yarrak...)
         if (p.length >= 3 && v.includes(p)) return true;
-        // 2 harfli kritik kısaltmalar (oc, aq)
+        // 2 harfli kritik kısaltmalar (oc, aq, am)
         if (p === 'oc' && (v.startsWith('oc') || v.endsWith('oc') || v === 'oc')) return true;
         if (p === 'aq' && (v.startsWith('aq') || v.endsWith('aq') || v === 'aq')) return true;
+        if (p === 'am' && v === 'am') return true;
       }
     }
 

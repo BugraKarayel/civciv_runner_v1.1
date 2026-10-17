@@ -48,6 +48,12 @@ for (const word of newlyAddedProfane) {
   assert(ProfanityFilter.isProfane(word), `Yeni eklenen "${word}" filtrelenmeli`);
 }
 
+// 6. "Am", "4m" ve türevi yazımlar
+const amVariants = ['am', 'Am', 'AM', '4m', '4M', '4mm', '4mcik', '4mk', '4mq', 'a.m', '4.m', 'am_99', '4m_pro', 'aaammm', 'amcuk', 'amsalak', '@m', '@mk'];
+for (const word of amVariants) {
+  assert(ProfanityFilter.isProfane(word), `"Am/4m" türevi "${word}" filtrelenmeli`);
+}
+
 console.log(`\nTest Sonucu: ${passed} Başarılı, ${failed} Hatalı`);
 if (failed > 0) {
   process.exit(1);
